@@ -1009,6 +1009,25 @@ SyntaxTree::getSourceRangeOffsets(const Node &N) const {
   return {Begin, End};
 }
 
+std::pair<unsigned, unsigned>
+SyntaxTree::getSourceBeginLocation(const Node &N) const {
+  const SourceManager &SrcMgr = TreeImpl->AST.getSourceManager();
+  SourceRange Range = N.ASTNode.getSourceRange();
+  SourceLocation BeginLoc = Range.getBegin();  
+  PresumedLoc PLoc = SrcMgr.getPresumedLoc(BeginLoc); 
+  return {PLoc.getLine(), PLoc.getColumn()};
+}
+
+std::pair<unsigned, unsigned>
+SyntaxTree::getSourceEndLocation(const Node &N) const {
+  const SourceManager &SrcMgr = TreeImpl->AST.getSourceManager();
+  SourceRange Range = N.ASTNode.getSourceRange();
+  SourceLocation EndLoc = Range.getEnd(); 
+  PresumedLoc PLoc = SrcMgr.getPresumedLoc(EndLoc); 
+  return {PLoc.getLine(), PLoc.getColumn()};
+}
+
+
 std::string SyntaxTree::getNodeValue(NodeId Id) const {
   return TreeImpl->getNodeValue(Id);
 }
